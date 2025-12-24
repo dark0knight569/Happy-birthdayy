@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        /* General Reset and Fonts */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; 
+        }
+
+        /* Container for all screens */
+        .screen {
+            display: none; 
+            height: 100vh;
+            width: 100vw;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Specific visibility class */
+        .active {
+            display: flex;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Card/Box Styling */
+        .content-box {
+            background: rgba(255, 255, 255, 0.85); /* Slightly transparent white */
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            max-height: 80vh; 
+            overflow-y: auto;
+            backdrop-filter: blur(5px); /* Blurs background behind box */
+        }
+
+        h1 { color: #d63384; margin-bottom: 10px; }
+        p { color: #333; line-height: 1.6; font-size: 1.1rem; }
+        
+        /* Form Elements */
+        input[type="text"] {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            width: 80%;
+            font-size: 1rem;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: #d63384; }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            background-color: #ff6b81;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            margin: 10px;
+        }
+        .btn:hover { background-color: #ff4757; transform: scale(1.05); }
+
+        /* --- BACKGROUND IMAGES --- */
+        /* Make sure your files are named exactly like this! */
+        #step1-login { background-image: url('bg_start.jpg'); } 
+        #step1-fail  { background-image: url('bg_sorry.jpg'); } 
+        #step2-mood  { background-image: url('bg_mood.jpg'); } 
+        #step3-bad   { background-image: url('bg_sad.jpg'); } 
+        #step5-final { background-image: url('bg_final.jpg'); } 
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music-1" loop>
+        <source src="song1.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="bg-music-2" loop>
+        <source src="song2.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="step1-login" class="screen active">
+        <div class="content-box">
+            <h1>Who is this?</h1>
+            <p>Please enter your name to continue.</p>
+            <input type="text" id="nameInput" placeholder="Enter your name...">
+            <button class="btn" onclick="checkName()">Enter</button>
+        </div>
+    </div>
+
+    <div id="step1-fail" class="screen">
+        <div class="content-box">
+            <h1>Oops!</h1>
+            <p>Sorry my friend, this is not for you. Sorry.</p>
+        </div>
+    </div>
+
+    <div id="step2-mood" class="screen">
+        <div class="content-box">
+            <h1>Welcome, Aadya!</h1>
+            <p>How is your day?</p>
+            <div>
+                <button class="btn" onclick="handleMood('good')">Good</button>
+                <button class="btn" onclick="handleMood('bad')">Bad</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="step3-bad" class="screen">
+        <div class="content-box">
+            <h1>Is everything okay?</h1>
+            <p>Hey, it's your birthday today, why are you sad? Enjoy yourself! Remember the good things.</p>
+            <p>Every day isn't the same, but if you look for the good in the bad, you'll find happiness. Why are you taking tension? Everything will have been alright. Whatever shortcomings or problems there are, everything will be solved.</p>
+            <p><strong>It's your birthday, enjoy.</strong></p>
+            <button class="btn" onclick="goToFinal()">Next</button>
+        </div>
+    </div>
+
+    <div id="step5-final" class="screen">
+        <div class="content-box">
+            <h1>Happy Birthday!</h1>
+            <p>Hi, how are you? I hope your day is going well. If you're reading this in the morning, I hope your day goes well.</p>
+            <p>I know that seeing your photo here, you might be wondering where all this came from and what it's doing here. It's a long story, maybe I'll tell you sometime, but today is your birthday, so let's concentrate on that.</p>
+            <p>I know we don't talk much, and we're not close friends, but consider this a small gift from me. I made this for you.</p>
+            <p><strong>So, Happy Birthday again! I hope you liked it.</strong></p>
+        </div>
+    </div>
+
+    <script>
+        const music1 = document.getElementById('bg-music-1');
+        const music2 = document.getElementById('bg-music-2');
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function checkName() {
+            const nameInput = document.getElementById('nameInput').value.trim();
+            const lowerName = nameInput.toLowerCase();
+
+            // Try to play music 1
+            music1.play().catch(e => console.log("Audio play failed:", e));
+
+            if (lowerName === "aadya" || lowerName === "aadya sinha") {
+                showScreen('step2-mood');
+            } else {
+                showScreen('step1-fail');
+                music1.pause(); 
+            }
+        }
+
+        function handleMood(option) {
+            if (option === 'bad') {
+                showScreen('step3-bad');
+            } else {
+                goToFinal();
+            }
+        }
+
+        function goToFinal() {
+            showScreen('step5-final');
+            // Stop first song, start second song
+            music1.pause();
+            music1.currentTime = 0;
+            music2.play().catch(e => console.log("Audio 2 play failed:", e));
+        }
+    </script>
+</body>
+</html>
